@@ -1,9 +1,12 @@
 package com.example.lazygridtest
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.LocalOnBackPressedDispatcherOwner
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,6 +20,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -52,32 +56,28 @@ fun Greeting() {
 
 @Composable
 fun Reset(){
+    val activity = LocalContext.current as Activity
+    //val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
+    val context = LocalContext.current
     Button (
-        onClick = {},
+        //onClick = { activity.finish() },
+        onClick = { context.startActivity(Intent(context, MainActivity::class.java)) },
         modifier = Modifier.fillMaxWidth()
-            .padding(top = 8.dp)
+            .padding(top = 16.dp)
             .padding(start = 12.dp)
             .padding(end = 12.dp)
     ){
-        Text("リセット")
+        Text("リセット" ,fontWeight = FontWeight.Bold,)
     }
 }
-
-@Composable
-fun DisplayCount(){
-    Text(
-        modifier = Modifier.padding(bottom = 8.dp),
-        text= "引いた枚数"
-    )
-}
-
 
 @Composable
 fun LazyVerticalGrid(context: Context = LocalContext.current.applicationContext){
     val list = (1..80).map{ it.toString() }
     val list01 = mutableListOf( "A","A","B","C","C","D","E","F","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","G","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","H","I","I","I","I","I","I","I","I","I","I","I","I","I","I","I","I","I","I","I","I" )
     val shuffledList = list01.shuffled()
-    var count: Int = 0
+    var count: Int by remember { mutableStateOf(0)}
+    var price: Int by remember { mutableStateOf(0)}
 
     LazyVerticalGrid(
         columns = GridCells.Fixed(3),
@@ -106,9 +106,9 @@ fun LazyVerticalGrid(context: Context = LocalContext.current.applicationContext)
                 backgroundColor = Color.Red,
                 modifier = Modifier.padding(4.dp).fillMaxWidth()
                     .clickable {
-                        if (!isClicked){ count++; isClicked = true}
-                        Toast.makeText(context, "引いた枚数:$count", Toast.LENGTH_SHORT).show()
-                               },
+                        if (!isClicked){ count++; isClicked = true; price = count * 730}
+                        //Toast.makeText(context, "引いた枚数:$count", Toast.LENGTH_SHORT).show()
+                    },
                 elevation = 8.dp,
             ) {
                 if ( isClicked ){
@@ -133,6 +133,18 @@ fun LazyVerticalGrid(context: Context = LocalContext.current.applicationContext)
             }
         }
     }
+    /*なぜか以下を入れると入れ替わる　要究明
+    Text(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp)
+            .padding(start = 12.dp)
+            .padding(end = 12.dp),
+        text= "引いた枚数:$count  　　金額:$price 円",
+        fontWeight = FontWeight.Bold,
+        textAlign = TextAlign.Center,
+        fontSize = 20.sp
+    )*/
 }
 
 @Preview(showBackground = true)
