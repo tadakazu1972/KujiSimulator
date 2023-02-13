@@ -15,6 +15,11 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Face
+import androidx.compose.material.icons.filled.Refresh
+import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
@@ -54,6 +59,22 @@ fun Greeting() {
 }
 
 @Composable
+fun ExtendedFloatingActionButton(){
+    val context = LocalContext.current
+    Box(modifier = Modifier.fillMaxSize()){
+        ExtendedFloatingActionButton(
+            icon = { Icon(Icons.Filled.Refresh, "")},
+            text = { Text("リセット")},
+            onClick = { context.startActivity(Intent(context, MainActivity::class.java))},
+            modifier = Modifier.align(alignment = Alignment.BottomCenter)
+                .padding(bottom = 100.dp),
+            elevation = FloatingActionButtonDefaults.elevation(8.dp)
+        )
+    }
+
+}
+
+@Composable
 fun Reset(){
     val activity = LocalContext.current as Activity
     //val dispatcher = LocalOnBackPressedDispatcherOwner.current?.onBackPressedDispatcher
@@ -79,7 +100,20 @@ fun LazyVerticalGrid( _list:List<String>){
 
     Scaffold(
         scaffoldState = rememberScaffoldState(),
-        topBar = { Reset() },
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "くじシミュレータ")},
+                navigationIcon = {
+                    IconButton(onClick = { })
+                    { Icon(imageVector = Icons.Rounded.Menu, contentDescription = "Drawer Icon")}
+                },
+                actions = {
+                    IconButton(onClick = {})
+                    { Icon(imageVector = Icons.Rounded.Settings, contentDescription = "設定", tint = Color.White,)}
+                },
+            )
+            //Reset()
+                 },
         bottomBar = {
             Text(
                 text = "枚数: $count　 $price 円",
@@ -151,6 +185,7 @@ fun LazyVerticalGrid( _list:List<String>){
                 }
             }
         }
+        ExtendedFloatingActionButton()
     }
 
     /*
